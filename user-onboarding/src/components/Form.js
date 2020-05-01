@@ -1,10 +1,85 @@
 import React, { useState, useEffect } from "react";
 import * as yup from "yup";
 import axios from "axios";
+import Team from "./Card";
+import styled from "styled-components";
+
+
+const Card = styled.div`
+background: #224488;
+display: flex;
+flex-direction: row;
+justify-content: space-evenly;
+align-content: space-around;
+border-radius: 20px;
+margin-bottom: 2%;
+margin: 0;
+`;
+
+const InputBox = styled.form`
+background: black;
+border: 2px solid grey;
+display: flex;
+flex-direction: column;
+margin: 0;
+justify-content: center;
+color: white;
+font-family: 'Neucha', cursive;
+align-content: space-around;
+`;
+
+const Submit = styled.button`
+background: black;
+color: white;
+.disabled {
+  background: grey;
+  color: red;
+}
+`;
+// const MemberContainer = styled.div`
+// background: #228656;
+// display: flex;
+// flex-direction: row;
+// justify-content: space-evenly;
+// border-radius: 20px;
+// `;
+
+// const TeamList = styled.div`
+// background: black;
+// border: 2px solid grey;
+// width: 200px;
+// display: flex;
+// flex-direction: column;
+// margin: 0;
+// justify-content: center;
+// font-family: 'Neucha', cursive;
+// border-radius: 8px;
+// `;
+
+// const Name = styled.h2 `
+// color: Blue;
+// `;
+
+// const Email = styled.p`
+// color: green;
+// `;
+
+// const Role = styled.p`
+// color: yellow;
+// `;
+// const Bio = styled.p`
+// color: orange;
+// `;
+// const Terms = styled.p`
+// color: silver;
+// `;
+// const Pass = styled.p`
+// color: red;
+// `;
 
 export default function Form() {
   const [post, setPost] = useState([]);
-//   const [user, setUser] = useState([]);
+  const [user, setUser] = useState([]);
   //reqres.in
   // managing state for our form inputs
   const [formState, setFormState] = useState({
@@ -15,6 +90,8 @@ export default function Form() {
     role: "",
     terms: ""
   });
+
+
 
   const [ButtonDisabled, setButtonDisabled] = useState(true);
 
@@ -55,7 +132,7 @@ export default function Form() {
       .post("https://reqres.in/api/users", formState)
       .then(response => {
         setPost(response.data);
-        // setUser(response.data);
+        setUser([...user, response.data]);
         setFormState({
           username: "",
           email: "",
@@ -68,6 +145,7 @@ export default function Form() {
       .catch(err => console.log(err.response));
   };
 
+  
   // onChange function
   const inputChange = e => {
     console.log("input changed!", e.target.value);
@@ -102,7 +180,8 @@ export default function Form() {
   };
 
   return (
-    <form onSubmit={formSubmit}>
+    <Card>
+    <InputBox onSubmit={formSubmit}>
       <label htmlFor="username">
       Username
         <input
@@ -111,6 +190,7 @@ export default function Form() {
           name="username"
           onChange={inputChange}
           value={formState.username}
+          placeholder ="What do we call you?"
         />
         {errors.username.length > 0 ? <p className="error">{errors.username}</p> : null}
       </label>
@@ -139,6 +219,7 @@ export default function Form() {
           minLength="8" required 
           autoComplete="new-password"
           value={formState.password}
+          placeholder ="Make it a good one, atleast 8."
           />
         {errors.password.length > 0 ? (
           <p className="error">{errors.password}</p>
@@ -146,11 +227,12 @@ export default function Form() {
       </label>
       
       <label htmlFor="bio">
-        Why would you like to volunteer?
+        Tell us a bit about yourself.
         <textarea
           name="bio"
           onChange={inputChange}
           value={formState.bio}
+          placeholder ="At least a couple sentences."
         />
         {errors.bio.length > 0 ? (
           <p className="error">{errors.bio}</p>
@@ -176,10 +258,17 @@ export default function Form() {
         />
         Terms & Conditions
       </label>
-      <pre>{JSON.stringify(post, null, 2)}</pre>
-      <button disabled={ButtonDisabled} type="submit">
+      <pre>{JSON.stringify(post, null, 2)}
+      
+      </pre>
+      <Submit disabled={ButtonDisabled} type="submit">
         Submit
-      </button>
-    </form>
+      </Submit>
+    </InputBox>
+    <Team user={user} />
+    </Card>
+    
   );
+ 
 }
+

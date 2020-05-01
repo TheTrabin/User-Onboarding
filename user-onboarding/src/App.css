@@ -1,3 +1,8 @@
+body {
+  background: black;
+  color: grey;
+}
+
 html {
   font-size: 62.5%;
 }
